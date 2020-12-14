@@ -1,19 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-// 引入路由中需要使用的组件功能
-import Login from '@/views/login/index'
-import Layout from '@/views/layout/index'
-import Home from '@/views/home/index'
-import Role from '@/views/role/index'
-import Menu from '@/views/menu/index'
-import Resource from '@/views/resource/index'
-import Course from '@/views/course/index'
-import User from '@/views/user/index'
-import Advert from '@/views/advert/index'
-import AdvertSpace from '@/views/advert-space/index'
-import ErrorPage from '@/views/error-page/index'
-
 Vue.use(VueRouter)
 
 // 路由规则
@@ -21,58 +8,58 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: Login
+    component: () => import(/* webpackChunkName: 'login' */'@/views/login/index')
   },
   {
     path: '/',
-    component: Layout,
+    component: () => import(/* webpackChunkName: 'layout' */'@/views/layout/index'),
     children: [
       {
         path: '',
         name: 'home',
-        component: Home
+        component: () => import(/* webpackChunkName: 'home' */'@/views/home/index')
       },
       {
         path: '/role',
         name: 'role',
-        component: Role
+        component: () => import(/* webpackChunkName: 'role' */'@/views/role/index')
       },
       {
         path: '/menu',
         name: 'menu',
-        component: Menu
+        component: () => import(/* webpackChunkName: 'menu' */'@/views/menu/index')
       },
       {
         path: '/resource',
         name: 'resource',
-        component: Resource
+        component: () => import(/* webpackChunkName: 'resource' */'@/views/resource/index')
       },
       {
         path: '/course',
         name: 'course',
-        component: Course
+        component: () => import(/* webpackChunkName: 'course' */'@/views/course/index')
       },
       {
         path: '/user',
         name: 'user',
-        component: User
+        component: () => import(/* webpackChunkName: 'user' */'@/views/user/index')
       },
       {
         path: '/advert',
         name: 'advert',
-        component: Advert
+        component: () => import(/* webpackChunkName: 'advert' */'@/views/advert/index')
       },
       {
         path: '/advert-space',
         name: 'advert-space',
-        component: AdvertSpace
+        component: () => import(/* webpackChunkName: 'advert-space' */'@/views/advert-space/index')
       }
     ]
   },
   {
     path: '*',
     name: 'error-page',
-    component: ErrorPage
+    component: () => import(/* webpackChunkName: 'error-page' */'@/views/error-page/index')
   }
 ]
 
