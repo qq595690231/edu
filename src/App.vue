@@ -16,4 +16,8 @@
   </div>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+  div {
+    background-color: $success-color;
+  }
+</style>
