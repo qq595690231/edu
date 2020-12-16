@@ -61,19 +61,24 @@ export default {
   methods: {
     // 登录功能
     async onSubmit () {
-      /* this.$refs.form.validate(valid => { }) */
       try {
         // 1. 设置校验
         await this.$refs.form.validate()
-
         // 2. 发送请求
-        request({
+        const { data } = await request({
           method: 'POST',
-          // headers: { 'content-type': 'application/x-www-form-urlencoded' },
           url: '/front/user/login',
-          // urlencoded 格式：  名=值&名=值。。
           data: qs.stringify(this.form)
         })
+        // 3. 响应处理
+        if (data.state === 1) {
+          this.$router.push({
+            name: 'home'
+          })
+          this.$message.success('登录成功')
+        } else {
+          this.$message.error('登录失败')
+        }
       } catch (err) {
         // 设置校验失败后的功能（提示）
         console.log('没有通过校验')
