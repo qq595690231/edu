@@ -34,8 +34,10 @@
 </template>
 
 <script>
-import request from '@/utils/request'
-import qs from 'qs'
+// import request from '@/utils/request'
+// import qs from 'qs'
+// 引入封装的接口功能组件
+import { login } from '@/services/user'
 
 export default {
   name: 'LoginIndex',
@@ -67,14 +69,15 @@ export default {
       try {
         // 1. 设置校验
         await this.$refs.form.validate()
+
         // 2. 发送请求
         this.isLoginLoading = true
-
-        const { data } = await request({
+        /* const { data } = await request({
           method: 'POST',
           url: '/front/user/login',
           data: qs.stringify(this.form)
-        })
+        }) */
+        const { data } = await login(this.form)
 
         this.isLoginLoading = false
 
