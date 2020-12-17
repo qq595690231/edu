@@ -34,8 +34,6 @@
 </template>
 
 <script>
-// import request from '@/utils/request'
-// import qs from 'qs'
 // 引入封装的接口功能组件
 import { login } from '@/services/user'
 
@@ -67,26 +65,17 @@ export default {
     // 登录功能
     async onSubmit () {
       try {
-        // 1. 设置校验
         await this.$refs.form.validate()
-
-        // 2. 发送请求
         this.isLoginLoading = true
-        /* const { data } = await request({
-          method: 'POST',
-          url: '/front/user/login',
-          data: qs.stringify(this.form)
-        }) */
         const { data } = await login(this.form)
-
         this.isLoginLoading = false
-
-        // 3. 响应处理
         if (data.state === 1) {
           this.$router.push({
             name: 'home'
           })
           this.$message.success('登录成功')
+          // 将用户信息存储到 Vuex 中
+          this.$store.commit('setUser', data.content)
         } else {
           this.$message.error('登录失败')
         }
