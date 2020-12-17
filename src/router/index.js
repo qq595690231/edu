@@ -77,7 +77,13 @@ router.beforeEach((to, from, next) => {
     // 验证 Vuex 的 store 中的登录用户信息是否存储
     if (!store.state.user) {
       // 未登录，跳转到登录页
-      return next({ name: 'login' })
+      return next({
+        name: 'login',
+        query: {
+          // 将本次路由的 fullPath 传递给 login 页面
+          redirect: to.fullPath
+        }
+      })
     }
     // 已经登录，允许通过
     next()
