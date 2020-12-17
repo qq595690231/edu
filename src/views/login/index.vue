@@ -44,7 +44,7 @@ export default {
       // 存储表单数据的对象
       form: {
         phone: '17201234567',
-        password: '111111'
+        password: 'qsryja'
       },
       // 用于设置表单校验规则
       rules: {
