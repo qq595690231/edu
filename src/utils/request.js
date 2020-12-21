@@ -47,6 +47,11 @@ function redirectLogin () {
   })
 }
 
+// 存储是否正在更新 Token 的状态
+let isRefreshing = false
+// 存储因为等待 Token 刷新而挂起的请求
+let requests = []
+
 // 响应拦截器
 request.interceptors.response.use(function (response) {
   // 状态码 2xx 会执行这里
@@ -59,14 +64,21 @@ request.interceptors.response.use(function (response) {
     if (status === 400) {
       errorMessage = '请求参数错误'
     } else if (status === 401) {
-      // 1. 无 Token 信息
       if (!store.state.user) {
-        // 跳转登录页
         redirectLogin()
         return Promise.reject(error)
       }
-      // 2. Token 无效（错误 Token，过期 Token）
-      //  - 发送请求，获取新的 access_token
+
+      // 检测是否已经存在了正在刷新 Token 的请求
+      if (isRefreshing) {
+        // 将当前失败的请求，存储到请求列表中
+        return requests.push(() => {
+          // 当前函数调用后，会自动发送本次失败的请求
+          request(error.config)
+        })
+      }
+      isRefreshing = true
+      // 发送请求，获取新的 access_token
       return request({
         method: 'POST',
         url: '/front/user/refresh_token',
@@ -84,11 +96,17 @@ request.interceptors.response.use(function (response) {
         // 刷新 token 成功
         //  - 存储新的 token
         store.commit('setUser', res.data.content)
-        //  - 重新发送失败的请求
-        //    - error.config 本次失败的请求的配置对象
+        //  - 重新发送失败的请求（根据 requests 发送所有失败的请求）
+        requests.forEach(callback => callback())
+        //  - 发送完毕，清除 requests 内容即可
+        requests = []
+        //  - 将本次请求发送
         return request(error.config)
       }).catch(err => {
         console.log(err)
+      }).finally(() => {
+        // 请求发送完毕，响应处理完毕，将刷新状态更改为 false 即可
+        isRefreshing = false
       })
     } else if (status === 403) {
       errorMessage = '没有权限，请联系管理员'

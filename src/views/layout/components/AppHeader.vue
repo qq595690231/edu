@@ -38,6 +38,8 @@ export default {
   created () {
     // 加载用户信息
     this.loadUserInfo()
+    // 下面是为了进行功能测试演示
+    this.loadUserInfo()
   },
   data () {
     return {
