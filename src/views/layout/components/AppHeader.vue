@@ -13,13 +13,12 @@
         <!-- 用户头像。使用 Avatar 组件 -->
         <el-avatar
           :size="30"
-          :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
+          :src="userInfo.portrait || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
         ></el-avatar>
         <i class="el-icon-arrow-down el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <!-- <el-dropdown-item>{{ userInfo.userName }}</el-dropdown-item> -->
-        <el-dropdown-item>测试用户</el-dropdown-item>
+        <el-dropdown-item>{{ userInfo.userName }}</el-dropdown-item>
         <el-dropdown-item
           divided
           @click.native="handleLogout"
