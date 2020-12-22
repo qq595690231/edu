@@ -11,3 +11,12 @@ export const getEditMenuInfo = (id = -1) => {
     }
   })
 }
+
+// 添加菜单接口
+export const createOrUpdateMenu = data => {
+  return request({
+    method: 'POST',
+    url: '/boss/menu/saveOrUpdate',
+    data
+  })
+}
