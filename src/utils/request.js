@@ -55,7 +55,7 @@ let requests = []
 // 响应拦截器
 request.interceptors.response.use(function (response) {
   // 状态码 2xx 会执行这里
-  console.log('响应成功了：', response)
+  // console.log('响应成功了：', response)
   return response
 }, function (error) {
   if (error.response) {
