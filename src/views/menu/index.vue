@@ -36,7 +36,7 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              @click="handleEdit(scope.row)">编辑</el-button>
             <el-button
               size="mini"
               type="danger"
@@ -61,8 +61,14 @@ export default {
     this.loadAllMenus()
   },
   methods: {
-    handleEdit () {
-
+    handleEdit (rowData) {
+      // 设置跳转
+      this.$router.push({
+        name: 'menu-edit',
+        params: {
+          id: rowData.id
+        }
+      })
     },
     handleDelete (rowData) {
       // 删除的确认提示
