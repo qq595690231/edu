@@ -14,28 +14,52 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary">查询</el-button>
           </el-form-item>
         </el-form>
       </div>
       <div>
         <!-- 使用 Table 组件 -->
         <el-table
-          :data="tableData"
+          :data="resources"
           style="width: 100%">
           <el-table-column
-            prop="date"
-            label="日期"
-            width="180">
+            type="index"
+            label="编号"
+            width="100">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="姓名"
-            width="180">
+            label="资源名称">
           </el-table-column>
           <el-table-column
-            prop="address"
-            label="地址">
+            prop="url"
+            label="资源路径">
+          </el-table-column>
+          <el-table-column
+            prop="description"
+            label="描述">
+          </el-table-column>
+          <!-- 设置过滤器需要使用作用域插槽获取数据 -->
+          <el-table-column
+            label="添加时间">
+            <template slot-scope="scope">
+              <span>{{ scope.row.createdTime | dateFormat }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.row)"
+              >编辑</el-button>
+              <el-button
+                size="mini"
+                @click="handleDelete(scope.row)"
+                type="danger"
+              >删除</el-button>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -44,28 +68,41 @@
 </template>
 
 <script>
+import { getResourcePages } from '@/services/resource'
 export default {
   name: 'ResourceList',
   data () {
     return {
       formInline: {},
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      // 用于存储资源列表数据
+      resources: []
+    }
+  },
+  created () {
+    this.loadResources()
+  },
+  methods: {
+    async loadResources () {
+      const { data } = await getResourcePages({})
+      if (data.code === '000000') {
+        this.resources = data.data.records
+      }
+    },
+    handleEdit () {
+
+    },
+    handleDelete () {
+
+    }
+  },
+  filters: {
+    // 日期过滤器
+    dateFormat (date) {
+      date = new Date(date)
+      return `
+        ${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} 
+        ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
+      `
     }
   }
 }
