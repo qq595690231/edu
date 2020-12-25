@@ -25,3 +25,11 @@ export const createOrUpdate = data => {
     data
   })
 }
+
+// 获取角色
+export const getRoleById = id => {
+  return request({
+    method: 'GET',
+    url: `/boss/role/${id}`
+  })
+}

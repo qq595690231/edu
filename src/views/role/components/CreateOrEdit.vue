@@ -25,9 +25,23 @@
 </template>
 
 <script>
-import { createOrUpdate } from '@/services/role'
+import { createOrUpdate, getRoleById } from '@/services/role'
 export default {
   name: 'CreateOrEdit',
+  props: {
+    isEdit: {
+      type: Boolean,
+      default: false
+    },
+    roleId: {
+      type: [Number, String]
+    }
+  },
+  created () {
+    if (this.isEdit) {
+      this.loadRole()
+    }
+  },
   data () {
     return {
       role: {
@@ -38,6 +52,12 @@ export default {
     }
   },
   methods: {
+    async loadRole () {
+      const { data } = await getRoleById(this.roleId)
+      if (data.code === '000000') {
+        this.role = data.data
+      }
+    },
     onCancel () {
       // 设置取消状态，让父组件处理
       this.$emit('cancel')

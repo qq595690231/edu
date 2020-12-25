@@ -17,7 +17,7 @@
         </el-form>
       </div>
       <!-- 显示对话框 -->
-      <el-button @click="dialogVisible = true">添加角色</el-button>
+      <el-button @click="handleAdd">添加角色</el-button>
       <el-table
         :data="roles"
         style="width: 100%"
@@ -68,11 +68,13 @@
       </el-table>
       <!-- 添加角色的对话框结构 -->
       <el-dialog
-        title="提示"
+        :title="isEdit ? '编辑角色' : '添加角色'"
         :visible.sync="dialogVisible"
         width="30%">
         <!-- 将添加与编辑功能单独封装到组件中 -->
         <create-or-edit
+          :is-edit="isEdit"
+          :role-id="roleId"
           @success="handleSuccess"
           @cancel="handleCancel"
         ></create-or-edit>
@@ -99,13 +101,22 @@ export default {
       isLoading: false,
       roles: [],
       // 控制对话框显示
-      dialogVisible: false
+      dialogVisible: false,
+      // 控制对话框的功能状态
+      isEdit: false,
+      // 存储正在编辑的角色 ID
+      roleId: ''
     }
   },
   created () {
     this.loadRoles()
   },
   methods: {
+    // 点击添加按钮触发
+    handleAdd () {
+      this.dialogVisible = true
+      this.isEdit = false
+    },
     // 监听子组件取消状态
     handleCancel () {
       this.dialogVisible = false
@@ -124,7 +135,9 @@ export default {
 
     },
     handleEdit (role) {
-
+      this.dialogVisible = true
+      this.isEdit = true
+      this.roleId = role.id
     },
     // 删除角色
     handleDelete (role) {
