@@ -72,7 +72,10 @@
         :visible.sync="dialogVisible"
         width="30%">
         <!-- 将添加与编辑功能单独封装到组件中 -->
-        <create-or-edit></create-or-edit>
+        <create-or-edit
+          @success="handleSuccess"
+          @cancel="handleCancel"
+        ></create-or-edit>
       </el-dialog>
     </el-card>
   </div>
@@ -103,6 +106,17 @@ export default {
     this.loadRoles()
   },
   methods: {
+    // 监听子组件取消状态
+    handleCancel () {
+      this.dialogVisible = false
+    },
+    // 监听子组件的添加状态，成功时触发
+    handleSuccess () {
+      // 隐藏对话框
+      this.dialogVisible = false
+      // 刷新列表
+      this.loadRoles()
+    },
     onReset () {
 
     },

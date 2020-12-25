@@ -16,3 +16,12 @@ export const deleteRole = id => {
     url: `/boss/role/${id}`
   })
 }
+
+// 保存或更新角色
+export const createOrUpdate = data => {
+  return request({
+    method: 'POST',
+    url: '/boss/role/saveOrUpdate',
+    data
+  })
+}
