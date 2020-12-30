@@ -134,12 +134,8 @@ export default {
       // 刷新列表
       this.loadRoles()
     },
-    onReset () {
-
-    },
-    onSubmit () {
-
-    },
+    onReset () {},
+    onSubmit () {},
     handleEdit (role) {
       this.dialogVisible = true
       this.isEdit = true
