@@ -96,17 +96,17 @@
       :visible.sync="dialogVisible"
       width="50%">
       <!-- 下拉菜单组件位置 -->
-      <el-select v-model="value1" multiple placeholder="请选择">
+      <el-select v-model="roleIdList" multiple placeholder="请选择">
         <el-option
-          v-for="item in options"
+          v-for="item in roles"
           :key="item.value"
-          :label="item.label"
-          :value="item.value">
+          :label="item.name"
+          :value="item.id">
         </el-option>
       </el-select>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="handleAllocRole">确 定</el-button>
       </span>
     </el-dialog>
   </el-card>
@@ -114,6 +114,7 @@
 
 <script>
 import { getUserPages, forbidUser } from '@/services/user'
+import { getAllRoles, allocateUserRoles } from '@/services/role'
 
 export default {
   name: 'UserList',
@@ -132,23 +133,11 @@ export default {
       // 用于控制分配角色对话框是否显示
       dialogVisible: false,
       // 下拉菜单数据
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      value1: []
+      roles: [],
+      // 选中选项的 ID 组成的数组
+      roleIdList: [],
+      // 当前要进行角色分配的用户 ID
+      currentRoleID: null
     }
   },
   created () {
@@ -156,11 +145,22 @@ export default {
   },
 
   methods: {
+    // 提交分配
+    async handleAllocRole () {
+      // 点击确认，将分配角色信息提交给服务端
+      const { data } = await allocateUserRoles({
+        userId: this.currentRoleID,
+        roleIdList: this.roleIdList
+      })
+      if (data.code === '000000') {
+        this.$message.success('分配角色成功')
+        this.dialogVisible = false
+      }
+    },
     // 加载用户
     async loadUsers () {
       this.isLoading = true
       const { rangeDate } = this.filterParams
-      console.log(rangeDate)
       if (rangeDate && rangeDate.length) {
         this.filterParams.startCreateTime = rangeDate[0]
         this.filterParams.endCreateTime = rangeDate[1]
@@ -185,9 +185,15 @@ export default {
       this.loadUsers()
     },
     // 点击用户的分配角色按钮
-    handleSelectRole () {
+    async handleSelectRole (userInfo) {
+      this.currentRoleID = userInfo.id
       // 显示分配角色对话框
       this.dialogVisible = true
+      // 请求所有角色列表数据
+      const { data } = await getAllRoles()
+      if (data.code === '000000') {
+        this.roles = data.data
+      }
     }
   }
 }
