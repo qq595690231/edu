@@ -114,7 +114,7 @@
 
 <script>
 import { getUserPages, forbidUser } from '@/services/user'
-import { getAllRoles, allocateUserRoles } from '@/services/role'
+import { getAllRoles, allocateUserRoles, getUserRoles } from '@/services/role'
 
 export default {
   name: 'UserList',
@@ -193,6 +193,12 @@ export default {
       const { data } = await getAllRoles()
       if (data.code === '000000') {
         this.roles = data.data
+      }
+
+      // 请求当前用户的已分配角色信息
+      const { data: data2 } = await getUserRoles(userInfo.id)
+      if (data2.code === '000000') {
+        this.roleIdList = data2.data.map(item => item.id)
       }
     }
   }
