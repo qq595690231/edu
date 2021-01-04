@@ -75,7 +75,9 @@
               active-color="#13ce66"
               inactive-color="#ff4949"
               :active-value="1"
-              :inactive-value="0">
+              :inactive-value="0"
+              @change="onStateChange(scope.row)"
+            >
             </el-switch>
           </template>
         </el-table-column>
@@ -104,7 +106,7 @@
 </template>
 
 <script>
-import { getQueryCourses } from '@/services/course'
+import { getQueryCourses, changeState } from '@/services/course'
 
 export default {
   name: 'CourseList',
@@ -132,6 +134,16 @@ export default {
   },
 
   methods: {
+    // 上下架切换处理
+    async onStateChange (course) {
+      const { data } = await changeState({
+        courseId: course.id,
+        status: course.status
+      })
+      if (data.code === '000000') {
+        this.$message.success(`${course.status === 1 ? '上架' : '下架'}成功`)
+      }
+    },
     // 加载课程
     async loadCourses () {
       this.isLoading = true
