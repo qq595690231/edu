@@ -76,6 +76,7 @@
               inactive-color="#ff4949"
               :active-value="1"
               :inactive-value="0"
+              :disabled="scope.row.isStatusLoading"
               @change="onStateChange(scope.row)"
             >
             </el-switch>
@@ -136,12 +137,16 @@ export default {
   methods: {
     // 上下架切换处理
     async onStateChange (course) {
+      // 点击开关，开启禁用状态
+      course.isStatusLoading = true
       const { data } = await changeState({
         courseId: course.id,
         status: course.status
       })
       if (data.code === '000000') {
         this.$message.success(`${course.status === 1 ? '上架' : '下架'}成功`)
+        // 取消禁用状态
+        course.isStatusLoading = false
       }
     },
     // 加载课程
@@ -149,6 +154,10 @@ export default {
       this.isLoading = true
       const { data } = await getQueryCourses(this.filterParams)
       if (data.code === '000000') {
+        data.data.records.forEach(item => {
+          // 用于表示更改的状态
+          item.isStatusLoading = false
+        })
         // 保存课程信息
         this.courses = data.data.records
         this.totalCount = data.data.total
