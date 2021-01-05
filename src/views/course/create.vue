@@ -2,6 +2,7 @@
   <div class="course-create">
     <el-card>
       <div slot="header">
+        <!-- 步骤条 -->
         <el-steps :active="activeStep" simple>
           <el-step
             v-for="(item,i) in steps"
@@ -66,8 +67,11 @@
               action="https://jsonplaceholder.typicode.com/posts/"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload">
-              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              :before-upload="beforeAvatarUpload"
+              :http-request="handleUpload"
+            >
+              <!-- img 为预览图片的显示位置 -->
+              <img v-if="course.courseListImg" :src="course.courseListImg" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
@@ -163,6 +167,8 @@
 
 <script>
 // import { saveOrUpdateCourse } from '@/services/course'
+import { uploadCourseImage } from '@/services/course'
+
 export default {
   name: 'CourseCreate',
   data () {
@@ -184,14 +190,18 @@ export default {
       // 添加课程的相关信息
       course: {
         id: 0,
+        // 课程名称
         courseName: '',
+        // 课程介绍
         brief: '',
         teacherDTO: {
           id: 0,
           courseId: 0,
+          // 讲师名称
           teacherName: '',
           teacherHeadPicUrl: '',
           position: '',
+          // 讲师介绍
           description: ''
         },
         courseDescriptionMarkDown: '',
@@ -201,10 +211,15 @@ export default {
         discountsTag: '',
         isNew: true,
         isNewDes: '',
+        // 课程封面地址
         courseListImg: '',
+        // 解锁封面地址
         courseImgUrl: '',
+        // 课程排序
         sortNum: 0,
+        // 概述1
         previewFirstField: '',
+        // 概述2
         previewSecondField: '',
         status: 0,
         sales: 0,
@@ -222,6 +237,20 @@ export default {
     }
   },
   methods: {
+    // 图片上传处理函数
+    //   - option 为上传的相关信息
+    //     - option.file 为上传的文件信息
+    async handleUpload (option) {
+      // 使用 FormData 对象处理
+      const fd = new FormData()
+      fd.append('file', option.file)
+      // 发送上传请求
+      const { data } = await uploadCourseImage(fd)
+      if (data.code === '000000') {
+        // data.data.name 服务端响应的，图片上传成功后的线上地址
+        this.course.courseListImg = data.data.name
+      }
+    },
     // 上传图片成功回调
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
