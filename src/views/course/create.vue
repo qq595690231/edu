@@ -13,26 +13,46 @@
         </el-steps>
       </div>
       <!-- 步骤对应的表单结构 -->
-      <el-form>
+      <el-form label-width="80px">
         <!-- 基本信息 -->
         <div v-show="activeStep === 0">
           <el-form-item label="课程名称">
-            <el-input></el-input>
+            <el-input
+              v-model="course.courseName"
+            ></el-input>
           </el-form-item>
           <el-form-item label="课程简介">
-            <el-input></el-input>
+            <el-input
+              v-model="course.brief"
+            ></el-input>
           </el-form-item>
           <el-form-item label="课程概述">
-            <el-input></el-input>
+            <el-input
+              v-model="course.previewFirstField"
+              placeholder="概述1"
+              style="width: 49%;min-width: 300px; margin-right: 15px;"
+            >
+              <template slot="append">{{ course.previewFirstField.length }}/20</template>
+            </el-input>
+            <el-input
+              v-model="course.previewSecondField"
+              placeholder="概述2"
+              style="width: 49%;min-width: 300px;"
+            ></el-input>
           </el-form-item>
           <el-form-item label="讲师姓名">
-            <el-input></el-input>
+            <el-input
+              v-model="course.teacherDTO.teacherName"
+            ></el-input>
           </el-form-item>
           <el-form-item label="讲师简介">
-            <el-input></el-input>
+            <el-input
+              v-model="course.teacherDTO.description"
+            ></el-input>
           </el-form-item>
           <el-form-item label="课程排序">
             <el-input-number
+              v-model="course.sortNum"
               label="描述文字"
               controls-position="right"
             ></el-input-number>
@@ -142,6 +162,7 @@
 </template>
 
 <script>
+// import { saveOrUpdateCourse } from '@/services/course'
 export default {
   name: 'CourseCreate',
   data () {
@@ -159,7 +180,45 @@ export default {
       // 本地预览图片地址
       imageUrl: '',
       // 秒杀状态
-      isSeckill: false
+      isSeckill: false,
+      // 添加课程的相关信息
+      course: {
+        id: 0,
+        courseName: '',
+        brief: '',
+        teacherDTO: {
+          id: 0,
+          courseId: 0,
+          teacherName: '',
+          teacherHeadPicUrl: '',
+          position: '',
+          description: ''
+        },
+        courseDescriptionMarkDown: '',
+        price: 0,
+        discounts: 0,
+        priceTag: '',
+        discountsTag: '',
+        isNew: true,
+        isNewDes: '',
+        courseListImg: '',
+        courseImgUrl: '',
+        sortNum: 0,
+        previewFirstField: '',
+        previewSecondField: '',
+        status: 0,
+        sales: 0,
+        activityCourse: true,
+        activityCourseDTO: {
+          id: 0,
+          courseId: 0,
+          beginTime: '',
+          endTime: '',
+          amount: 0,
+          stock: 0
+        },
+        autoOnlineTime: ''
+      }
     }
   },
   methods: {
