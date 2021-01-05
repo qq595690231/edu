@@ -1,7 +1,17 @@
 <template>
   <div class="course-image">
     <el-form-item :label="label">
+      <!-- progress 组件 -->
+      <el-progress
+        v-if="isUploading"
+        type="circle"
+        :percentage="precentage"
+        :width="178"
+        :status="precentage === 100 ? 'success' : undefined"
+      ></el-progress>
+      <!-- upload 组件 -->
       <el-upload
+        v-else
         class="avatar-uploader"
         action="https://jsonplaceholder.typicode.com/posts/"
         :show-file-list="false"
@@ -28,21 +38,35 @@ export default {
     },
     label: {
       type: String
+    },
+    limit: {
+      type: Number,
+      default: 2
+    }
+  },
+  data () {
+    return {
+      // 用于保存上传状态
+      isUploading: false,
+      // 用于保存上传进度百分比
+      precentage: 0
     }
   },
   methods: {
     // 图片上传处理函数
-    //   - option 为上传的相关信息
-    //     - option.file 为上传的文件信息
     async handleUpload (option) {
-      // 使用 FormData 对象处理
+      this.isUploading = true
       const fd = new FormData()
       fd.append('file', option.file)
       // 发送上传请求
-      const { data } = await uploadCourseImage(fd)
+      const { data } = await uploadCourseImage(fd, event => {
+        this.precentage = Math.floor(event.loaded / event.total * 100)
+      })
       if (data.code === '000000') {
-        // data.data.name 服务端响应的，图片上传成功后的线上地址
         this.$emit('input', data.data.name)
+        this.isUploading = false
+        // 上传成功后，设置进度信息归零，避免下次上传出现回退效果
+        this.precentage = 0
       }
     },
     // 上传图片成功回调
@@ -52,7 +76,7 @@ export default {
     // 上传前的回调
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt2M = file.size / 1024 / 1024 < this.limit
 
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 JPG 格式!')
