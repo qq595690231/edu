@@ -155,11 +155,24 @@
         <!-- 课程详情 -->
         <div v-show="activeStep === 4">
           <el-form-item>
-            <el-input type="textarea"></el-input>
+            <el-input
+              type="textarea"
+              v-model="course.courseDescriptionMarkDown"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="是否上架">
+            <el-switch
+              v-model="course.status"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+            ></el-switch>
           </el-form-item>
           <el-form-item>
             <el-button
               type="primary"
+              @click="handleSave"
             >保存</el-button>
           </el-form-item>
         </div>
@@ -176,7 +189,7 @@
 
 <script>
 import CourseImage from './components/CourseImage'
-// import { saveOrUpdateCourse } from '@/services/course'
+import { saveOrUpdateCourse } from '@/services/course'
 
 export default {
   name: 'CourseCreate',
@@ -198,15 +211,16 @@ export default {
       // 本地预览图片地址
       imageUrl: '',
       // 添加课程的相关信息
+      //   - 将数据中与 ID 相关的数据去除，因为是编辑功能使用的
       course: {
-        id: 0,
+        // id: 0,
         // 课程名称
         courseName: '',
         // 课程介绍
         brief: '',
         teacherDTO: {
-          id: 0,
-          courseId: 0,
+          // id: 0,
+          // courseId: 0,
           // 讲师名称
           teacherName: '',
           teacherHeadPicUrl: '',
@@ -214,6 +228,7 @@ export default {
           // 讲师介绍
           description: ''
         },
+        // 课程详情内容
         courseDescriptionMarkDown: '',
         // 商品原价
         price: 0,
@@ -234,14 +249,15 @@ export default {
         previewFirstField: '',
         // 概述2
         previewSecondField: '',
+        // 上架状态，默认值 0 代表不上架，1 代表上架
         status: 0,
         // 销量
         sales: 0,
         // 参与秒杀活动的课程
         activityCourse: false,
         activityCourseDTO: {
-          id: 0,
-          courseId: 0,
+          // id: 0,
+          // courseId: 0,
           // 秒杀活动开始时间
           beginTime: '',
           // 结束时间
@@ -252,6 +268,17 @@ export default {
           stock: 0
         },
         autoOnlineTime: ''
+      }
+    }
+  },
+  methods: {
+    async handleSave () {
+      const { data } = await saveOrUpdateCourse(this.course)
+      if (data.code === '000000') {
+        this.$message.success('添加课程成功')
+        this.$router.push({
+          name: 'course'
+        })
       }
     }
   }
