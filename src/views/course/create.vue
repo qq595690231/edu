@@ -154,11 +154,8 @@
         </div>
         <!-- 课程详情 -->
         <div v-show="activeStep === 4">
-          <el-form-item>
-            <el-input
-              type="textarea"
-              v-model="course.courseDescriptionMarkDown"
-            ></el-input>
+          <el-form-item label="课程详情">
+            <text-editor v-model="course.courseDescriptionMarkDown"></text-editor>
           </el-form-item>
           <el-form-item label="是否上架">
             <el-switch
@@ -190,11 +187,13 @@
 <script>
 import CourseImage from './components/CourseImage'
 import { saveOrUpdateCourse } from '@/services/course'
+import TextEditor from '@/components/TextEditor'
 
 export default {
   name: 'CourseCreate',
   components: {
-    CourseImage
+    CourseImage,
+    TextEditor
   },
   data () {
     return {
