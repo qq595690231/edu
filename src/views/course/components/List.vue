@@ -100,7 +100,14 @@
                 }
               })"
             >编辑</el-button>
-            <el-button>内容管理</el-button>
+            <el-button
+              @click="$router.push({
+                name: 'course-section',
+                params: {
+                  courseId: scope.row.id
+                }
+              })"
+            >内容管理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -138,12 +145,10 @@ export default {
       isLoading: true
     }
   },
-
   created () {
     // 加载课程
     this.loadCourses()
   },
-
   methods: {
     // 上下架切换处理
     async onStateChange (course) {
