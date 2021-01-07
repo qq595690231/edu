@@ -82,6 +82,13 @@ const routes = [
         path: '/course/create',
         name: 'course-create',
         component: () => import(/* webpackChunkName: 'course-create' */'@/views/course/create')
+      },
+      // 编辑课程组件
+      {
+        path: '/course/:courseId/edit',
+        name: 'course-edit',
+        component: () => import(/* webpackChunkName: 'course-edit' */'@/views/course/edit'),
+        props: true
       }
     ]
   },
