@@ -243,7 +243,7 @@ export default {
           description: ''
         },
         // 课程详情内容
-        courseDescriptionMarkDown: '',
+        courseDescriptionMarkDown: '<h3>默认值</h3>',
         // 商品原价
         price: 0,
         // 售卖价格
@@ -290,6 +290,15 @@ export default {
     async loadCourse () {
       const { data } = await getCourseById(this.courseId)
       if (data.code === '000000') {
+        // - 判断当前课程是否为开启秒杀的状态，如果未开启秒杀，需要初始化数据
+        if (!data.data.activityCourse) {
+          data.data.activityCourseDTO = {
+            beginTime: '',
+            endTime: '',
+            amount: 0,
+            stock: 0
+          }
+        }
         this.course = data.data
       }
     },
@@ -297,7 +306,7 @@ export default {
     async handleSave () {
       const { data } = await saveOrUpdateCourse(this.course)
       if (data.code === '000000') {
-        this.$message.success('添加课程成功')
+        this.$message.success(`${this.isEdit ? '编辑' : '添加'}课程成功`)
         this.$router.push({
           name: 'course'
         })
