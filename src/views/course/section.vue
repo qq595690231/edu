@@ -5,6 +5,7 @@
         :data="sections"
         :props="defaultProps"
         draggable
+        :allow-drop="handleAllowDrop"
       >
         <div class="inner" slot-scope="{ node, data }">
           <!-- 内容设置 -->
@@ -54,6 +55,12 @@ export default {
     }
   },
   methods: {
+    // 节点拖拽处理函数
+    handleAllowDrop (draggingNode, dropNode, type) {
+      // - 规则1： 只能同级移动，type 不能为 'inner'
+      // - 规则2： 课时不能移动到其他章节中
+      return type !== 'inner' && draggingNode.data.sectionId === dropNode.data.sectionId
+    },
     async loadSection () {
       const { data } = await getSectionAndLesson(this.courseId)
       if (data.code === '000000') {
