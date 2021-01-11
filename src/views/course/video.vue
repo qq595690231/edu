@@ -31,7 +31,13 @@
 </template>
 
 <script>
-/* eslint-disable */
+/* import {
+  aliyunImagUploadAddressAdnAuth,
+  aliyunVideoUploadAddressAdnAuth,
+  aliyunVideoTransCode,
+  getAliyunTransCodePercent
+} from '@/services/aliyun-upload' */
+
 export default {
   name: 'CourseVideo',
   props: {
@@ -55,37 +61,37 @@ export default {
       uploader.startUpload()
     },
     initUploader () {
-      this.uploader = new AliyunUpload.Vod({
-        //阿里账号ID，必须有值
+      this.uploader = new window.AliyunUpload.Vod({
+        // 阿里账号ID，必须有值
         userId: '1618139964448548',
-        //上传到视频点播的地域，默认值为'cn-shanghai'，//eu-central-1，ap-southeast-1
+        // 上传到视频点播的地域，默认值为'cn-shanghai'，//eu-central-1，ap-southeast-1
         region: '',
-        //分片大小默认1 MB，不能小于100 KB
+        // 分片大小默认1 MB，不能小于100 KB
         partSize: 1048576,
-        //并行上传分片个数，默认5
+        // 并行上传分片个数，默认5
         parallel: 5,
-        //网络原因失败时，重新上传次数，默认为3
+        // 网络原因失败时，重新上传次数，默认为3
         retryCount: 3,
-        //网络原因失败时，重新上传间隔时间，默认为2秒
+        // 网络原因失败时，重新上传间隔时间，默认为2秒
         retryDuration: 2,
-        //开始上传
+        // 开始上传
         onUploadstarted: function (uploadInfo) {
           console.log('执行了')
         },
-        //文件上传成功
+        // 文件上传成功
         onUploadSucceed: function (uploadInfo) {
         },
-        //文件上传失败
+        // 文件上传失败
         onUploadFailed: function (uploadInfo, code, message) {
         },
-        //文件上传进度，单位：字节
+        // 文件上传进度，单位：字节
         onUploadProgress: function (uploadInfo, totalSize, loadedPercent) {
         },
-        //上传凭证超时
+        // 上传凭证超时
         onUploadTokenExpired: function (uploadInfo) {
         },
-        //全部文件上传结束
-        onUploadEnd:function(uploadInfo){  
+        // 全部文件上传结束
+        onUploadEnd: function (uploadInfo) {
         }
       })
     }
