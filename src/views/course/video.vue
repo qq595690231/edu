@@ -31,12 +31,13 @@
 </template>
 
 <script>
-/* import {
-  aliyunImagUploadAddressAdnAuth,
-  aliyunVideoUploadAddressAdnAuth,
-  aliyunVideoTransCode,
-  getAliyunTransCodePercent
-} from '@/services/aliyun-upload' */
+/* eslint-disable */
+import {
+  aliyunImageUploadAddressAndAuth,
+  aliyunVideoUploadAddressAndAuth,
+  aliyunVideoTranscode,
+  getAliyunTranscodePercent
+} from '@/services/aliyun-upload'
 
 export default {
   name: 'CourseVideo',
@@ -44,6 +45,14 @@ export default {
     courseId: {
       type: [String, Number],
       required: true
+    }
+  },
+  data () {
+    return {
+      // 图片上传后的地址，用于视频上传凭证请求
+      imageURL: '',
+      // 保存上传实例
+      uploader: null
     }
   },
   created () {
@@ -75,8 +84,34 @@ export default {
         // 网络原因失败时，重新上传间隔时间，默认为2秒
         retryDuration: 2,
         // 开始上传
-        onUploadstarted: function (uploadInfo) {
-          console.log('执行了')
+        onUploadstarted: async uploadInfo => {
+          let uploadAddressAndAuth = null
+          // 检测是图片或视频
+          if (uploadInfo.isImage) {
+            // 图片处理
+            const { data } = await aliyunImageUploadAddressAndAuth()
+            if (data.code === '000000') {
+              uploadAddressAndAuth = data.data
+              this.imageURL = uploadAddressAndAuth.imageURL
+            }
+          } else {
+            // 视频处理
+            const { data } = await aliyunVideoUploadAddressAndAuth({
+              fileName: uploadInfo.file.name,
+              imageUrl: this.imageURL
+            })
+            if (data.code === '000000') {
+              uploadAddressAndAuth = data.data
+            }
+          }
+          // 设置凭证与地址
+          this.uploader.setUploadAuthAndAddress(
+            uploadInfo,
+            uploadAddressAndAuth.uploadAuth,
+            uploadAddressAndAuth.uploadAddress,
+            uploadAddressAndAuth.imageId || uploadAddressAndAuth.videoId
+          )
+          // 此步设置完毕，上传进度开始执行
         },
         // 文件上传成功
         onUploadSucceed: function (uploadInfo) {
