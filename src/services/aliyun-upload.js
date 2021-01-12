@@ -17,11 +17,12 @@ export const aliyunVideoUploadAddressAndAuth = params => {
   })
 }
 
-// 阿里云转码
-export const aliyunTranscode = data => {
+// 阿里云转码请求
+export const aliyunVideoTranscode = data => {
   return request({
     method: 'POST',
-    url: '/boss/course/upload/aliyunTransCode.json'
+    url: '/boss/course/upload/aliyunTransCode.json',
+    data
   })
 }
 

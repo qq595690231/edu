@@ -102,6 +102,7 @@ export default {
             })
             if (data.code === '000000') {
               uploadAddressAndAuth = data.data
+              this.videoId = data.data.videoId
             }
           }
           // 设置凭证与地址
