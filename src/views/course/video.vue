@@ -25,6 +25,10 @@
             })"
           >返回</el-button>
         </el-form-item>
+        <el-form-item>
+          <p v-if="uploadPercent !== 0">视频上传中: {{ uploadPercent }}%</p>
+          <p v-if="isUploadSuccess">视频转码中：{{ isTranscodeSuccess ? '完成': '正在转码中...' }}</p>
+        </el-form-item>
       </el-form>
     </el-card>
   </div>
@@ -52,7 +56,15 @@ export default {
       // 图片上传后的地址，用于视频上传凭证请求
       imageURL: '',
       // 保存上传实例
-      uploader: null
+      uploader: null,
+      // 保存上传视频的 ID
+      videoId: null,
+      // 上传百分比
+      uploadPercent: 0,
+      // 上传完毕状态
+      isUploadSuccess: false,
+      // 转码完毕状态
+      isTranscodeSuccess: false
     }
   },
   created () {
@@ -60,6 +72,10 @@ export default {
   },
   methods: {
     handleUpload () {
+      // 考虑到可能重复使用某个组件进行上传处理，点击上传时，将数据重置
+      this.uploadPercent = 0
+      this.isUploadSuccess = false
+      this.isTranscodeSuccess = false
       const videoFile = this.$refs['video-file'].files[0]
       const imageFile = this.$refs['image-file'].files[0]
       const uploader = this.uploader
@@ -121,13 +137,38 @@ export default {
         onUploadFailed: function (uploadInfo, code, message) {
         },
         // 文件上传进度，单位：字节
-        onUploadProgress: function (uploadInfo, totalSize, loadedPercent) {
+        onUploadProgress: (uploadInfo, totalSize, loadedPercent) => {
+          if (!uploadInfo.isImage) {
+            this.uploadPercent = Math.floor(loadedPercent * 100)
+          }
         },
         // 上传凭证超时
         onUploadTokenExpired: function (uploadInfo) {
         },
         // 全部文件上传结束
-        onUploadEnd: function (uploadInfo) {
+        onUploadEnd: async uploadInfo => {
+          this.isUploadSuccess = true
+          const lessonId = this.$route.query.lessonId
+          // 发送视频转码请求
+          const { data } = await aliyunVideoTranscode({
+            lessonId,
+            coverImageUrl: this.imageURL,
+            fileId: this.videoId,
+            fileName: this.$refs['video-file'].files[0].name
+          })
+          if (data.code === '000000') {
+            // 轮询转码进度
+            const timer = setInterval(async () => {
+              const { data } = await getAliyunTranscodePercent(lessonId)
+              if (data.code === '000000') {
+                if (data.data === 100) {
+                  this.isTranscodeSuccess = true
+                  this.$message.success('视频转码成功')
+                  clearInterval(timer)
+                }
+              }
+            }, 1000)
+          }
         }
       })
     }
