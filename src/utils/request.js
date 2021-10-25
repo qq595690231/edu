@@ -19,7 +19,8 @@ function getBaseURL (url) {
   if (url.startsWith('/boss')) {
     return 'http://eduboss.lagou.com'
   } else {
-    return 'http://edufront.lagou.com'
+    return 'http://localhost:8000'
+    // return 'http://edufront.lagou.com'
   }
 }
 

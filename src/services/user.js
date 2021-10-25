@@ -1,3 +1,11 @@
+/*
+ * @Author: aze
+ * @Date: 2021-01-12 15:36:25
+ * @LastEditors: aze
+ * @LastEditTime: 2021-10-25 16:31:50
+ * @Description:
+ * @FilePath: \edu\src\services\user.js
+ */
 import request from '@/utils/request'
 import qs from 'qs'
 
@@ -5,7 +13,8 @@ import qs from 'qs'
 export const login = data => {
   return request({
     method: 'POST',
-    url: '/front/user/login',
+    url: '/users/login',
+    // url: '/front/user/login',
     data: qs.stringify(data)
   })
 }

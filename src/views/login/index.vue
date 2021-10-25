@@ -9,9 +9,9 @@
     >
       <el-form-item
         label="手机号"
-        prop="phone"
+        prop="user_name"
       >
-        <el-input v-model="form.phone"></el-input>
+        <el-input v-model="form.user_name"></el-input>
       </el-form-item>
       <el-form-item
         label="密码"
@@ -43,12 +43,12 @@ export default {
     return {
       // 存储表单数据的对象
       form: {
-        phone: '17201234567',
+        user_name: '17201234567',
         password: 'qsryja'
       },
       // 用于设置表单校验规则
       rules: {
-        phone: [
+        user_name: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { pattern: /^1\d{10}$/, message: '请输入正确的手机号', trigger: 'blur' }
         ],
